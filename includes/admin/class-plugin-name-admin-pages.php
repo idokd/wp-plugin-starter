@@ -145,8 +145,9 @@ class Plugin_Name_Admin_Pages
          *        For reference: http://codex.wordpress.org/Roles_and_Capabilities
          *
          */
-        $this->plugin_screen_hook_suffix['plugin_name'] = add_object_page(
-            __('CONF Plugin Name', 'plugin-name'),
+        $this->plugin_screen_hook_suffix['plugin_name'] = add_submenu_page(
+            'edit.php?post_type=entries',
+			__('CONF Plugin Name', 'plugin-name'),
             __('CONF Plugin Name', 'plugin-name'),
             'manage_options',
             $this->plugin_slug . '-main-page',
