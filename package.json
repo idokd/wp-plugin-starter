@@ -1,7 +1,7 @@
 {
   "name": "wp-plugin-starter-kit",
   "version": "1.0.0",
-  "author": "Max Kostinevich",
+  "author": "Victor Aigbeghian",
   "license": "ISC",
   "devDependencies": {
     "del": "^2.2.0",

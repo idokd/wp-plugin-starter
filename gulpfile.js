@@ -1,6 +1,6 @@
 /**
  * Gulp Tasks Setup
- * URI: https://github.com/maxkostinevich/wp-plugin-starter-kit
+ * URI: https://github.com/victoraigbeghian/wp-plugin-starter-kit
  */
 
 /** CONFIG **/
@@ -114,7 +114,7 @@ gulp.task('build', function(callback) {
 // Build Plugin
 gulp.task('build:plugin', function() {
     return gulp.src(mainFiles).pipe(gulpif('*.js', uglify())).pipe(gulpif('*.css', minifyCss())).pipe(gulp.dest('build/' + pluginConfig['plugin-name'])).pipe(notify({
-        message: 'Build task has been finished',
+        message: 'Build task has been completed',
         onLast: true
     }));
 });
