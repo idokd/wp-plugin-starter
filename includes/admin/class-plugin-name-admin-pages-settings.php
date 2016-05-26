@@ -151,7 +151,7 @@ class Plugin_Name_Admin_Pages_Settings
 
         /* ----- Plugin Module: Settings ----- */
         $this->plugin_screen_hook_suffix['settings'] = add_submenu_page(
-            $this->plugin_slug . '-main-page',
+            'edit.php?post_type=entries',
             __('Settings', 'plugin-name'),
             __('Settings', 'plugin-name'),
             'manage_options',
