@@ -49,13 +49,17 @@ add_action('plugins_loaded', array('Plugin_Name_Settings', 'get_instance'));
 /* ----- Module End: Settings ----- */
 
 /*----------------------------------------------------------------------------*
- * Include extensions and CPT
+ * Include extensions, CPT and widget
  *----------------------------------------------------------------------------*/
 
 /* ----- Plugin Module: CPT ----- */
 require_once plugin_dir_path(__FILE__) . 'includes/cpt/class-plugin-name-cpt.php';
 add_action('plugins_loaded', array('Plugin_Name_CPT', 'get_instance'));
 /* ----- Module End: CPT ----- */
+
+/* ----- Plugin Module: Widget ----- */
+require_once plugin_dir_path(__FILE__) . 'includes/class-plugin-name-recent-entries.php';
+/* ----- Module End: Widget ----- */
 
 /*----------------------------------------------------------------------------*
  * Custom DB Tables
@@ -95,6 +99,9 @@ if (is_admin() && (!defined('DOING_AJAX') || !DOING_AJAX)) {
 
     require_once plugin_dir_path(__FILE__) . 'includes/admin/class-plugin-name-admin.php';
     add_action('plugins_loaded', array('Plugin_Name_Admin', 'get_instance'));
+	
+	require_once plugin_dir_path(__FILE__) . 'includes/admin/class-plugin-name-admin-metaboxes.php';
+    add_action('plugins_loaded', array('Plugin_Name_Admin_Metaboxes', 'get_instance'));
 
     require_once plugin_dir_path(__FILE__) . 'includes/admin/class-plugin-name-admin-pages.php';
     add_action('plugins_loaded', array('Plugin_Name_Admin_Pages', 'get_instance'));
