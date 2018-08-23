@@ -114,8 +114,8 @@ class Plugin_Name_Admin
         wp_enqueue_style($this->plugin_slug . '-admin-styles', plugins_url('assets/css/admin.css', __FILE__), array(), $this->plugin_version);
 
         // Main Admin JS Script
-        wp_register_script($this->plugin_slug . '-admin-script', plugins_url('assets/js/admin.js', __FILE__), array('jquery', $this->plugin_slug . '-admin-app'), $this->plugin_version);
-        wp_enqueue_script($this->plugin_slug . '-admin-script');
+        wp_register_script($this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.js', __FILE__ ), array( 'jquery' ), $this->plugin_version );
+        wp_enqueue_script( $this->plugin_slug . '-admin-script' );
 
     }
 
