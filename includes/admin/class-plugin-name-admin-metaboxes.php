@@ -10,16 +10,15 @@
  */
 
 /**
- *-----------------------------------------
+ * -----------------------------------------
  * Do not delete this line
  * Added for security reasons: http://codex.wordpress.org/Theme_Development#Template_Files
- *-----------------------------------------
+ * -----------------------------------------
  */
-defined('ABSPATH') or die("Direct access to the script does not allowed");
+defined( 'ABSPATH' ) || exit;
 /*-----------------------------------------*/
 
-class Plugin_Name_Admin_Metaboxes
-{
+class Plugin_Name_Admin_Metaboxes {
 
 	/**
 	 * Instance of this class.
@@ -31,340 +30,356 @@ class Plugin_Name_Admin_Metaboxes
 	protected static $instance = null;
 
 	/**
+	 * Sreens to display the custom metabox.
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	private $screens = array(
+		'entries',
+	);
+
+	/**
+	 * Metabox fields
+	 *
+	 * @since 1.0.0
+	 * @var array
+	 */
+	private $fields = array();
+
+	/**
 	 * Initialize the class
 	 *
-	 * @since     1.0.0
+	 * @since 1.0.0
 	 */
-	private function __construct()
-	{
-		add_action( 'add_meta_boxes', 			array( $this, 'add_meta_boxes' ) );
-		add_action( 'save_post', 				array( $this, 'save_metabox' ), 1, 2 );
-		add_action( 'plugin_name_save_entries', array( $this, 'save_plugin_name_data' ), 1, 2 );
+	public function __construct() {
+		$this->fields = $this->metabox_fields();
+
+		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'admin_footer' ) );
+		add_action( 'save_post', array( $this, 'save_plugin_name_data' ) );
 	}
 
 	/**
 	 * Return an instance of this class.
 	 *
-	 * @since     1.0.0
+	 * @since 1.0.0
 	 *
-	 * @return    object    A single instance of this class.
+	 * @return object A single instance of this class.
 	 */
 	public static function get_instance() {
 
 		// If the single instance hasn't been set, set it now.
-		if ( null == self::$instance ) {
-			self::$instance = new self;
+		if ( null === self::$instance ) {
+			self::$instance = new self();
 		}
 
 		return self::$instance;
 	}
 
 	/**
-	 * Generate Metabox Fields
+	 * Generate metabox fields.
 	 *
-	 * @since     1.0.0
-	 * @access 	  public
+	 * @access public
+	 * @since  1.0.0
 	 */
-	public function metabox_fields()
-	{
-		return apply_filters( 'plugin_name_data_fields', array(
-			'_text_meta'	=> array(
-				'label'			=> __( 'Text Metabox', 'plugin-name' ),
-				'placeholder' 	=> __( 'This is a placeholder inside the text box', 'plugin-name' ),
-				'description'	=> __( 'This is the description below the text box', 'plugin-name' )
+	public function metabox_fields() {
+		$meta_fields = array(
+			array(
+				'id'          => '_text_meta',
+				'label'       => esc_html__( 'Text Metabox', 'plugin-name' ),
+				'placeholder' => esc_html__( 'This is a placeholder inside the text box', 'plugin-name' ),
+				'type'        => 'text',
+				'description' => esc_html__( 'This is the description below the text box', 'plugin-name' ),
 			),
-			'_checkbox'		=> array(
-				'label'			=> __( 'Checkbox', 'plugin-name' ),
-				'type'			=> 'checkbox'
+			array(
+				'id'    => '_checkbox',
+				'label' => esc_html__( 'Checkbox', 'plugin-name' ),
+				'type'  => 'checkbox',
+				'std'   => 1,
 			),
-			'_checkbox_checked'		=> array(
-				'label'			=> __( 'Checkbox Checked by Default', 'plugin-name' ),
-				'type'			=> 'checkbox',
-				'default'		=> '1'
+			array(
+				'id'      => '_select_meta',
+				'label'   => esc_html__( 'Select Any Value', 'plugin-name' ),
+				'type'    => 'select',
+				'options' => array(
+					'yes'  => esc_html__( 'Enable', 'plugin-name' ),
+					'no'   => esc_html__( 'Disable', 'plugin-name' ),
+					'none' => esc_html__( 'Do Nothing', 'plugin-name' ),
+				),
 			),
-			'_select_meta'	=> array(
-				'label'			=> __( 'Select Any Value', 'plugin-name' ),
-				'type'			=> 'select',
-				'options'		=> array(
-					'yes'	=> __( 'Enable', 'plugin-name' ),
-					'no'	=> __( 'Disable', 'plugin-name' ),
-					'none'	=> __( 'Do Nothing', 'plugin-name' ),
-				)
+			array(
+				'id'          => '_file_meta',
+				'label'       => esc_html__( 'File Upload', 'plugin-name' ),
+				'type'        => 'media',
+				'placeholder' => esc_html__( 'Upload a file', 'plugin-name' ),
 			),
-			'_file_meta'	=> array(
-				'label'			=> __( 'File Upload', 'plugin-name' ),
-				'placeholder'	=> __( 'Upload a file', '' ),
-				'type'			=> 'image'
+			array(
+				'id'          => 'textarea',
+				'label'       => esc_html__( 'Textarea Input', 'plugin-name' ),
+				'type'        => 'textarea',
+				'placeholder' => esc_html__( 'Textarea placeholder', 'plugin-name' ),
 			),
-			'_textarea'	=> array(
-				'label'			=> __( 'Textarea Input', 'plugin-name' ),
-				'placeholder'	=> __( 'Textarea placeholder', 'plugin-name' ),
-				'description'	=> __( 'Any description here', 'plugin-name' ),
-				'type'			=> 'textarea'
+			array(
+				'id'          => '_color-picker',
+				'label'       => esc_html__( 'Color Picker', 'plugin-name' ),
+				'type'        => 'color',
+				'description' => esc_html__( 'This is the description below the color selection box.', 'plugin-name' ),
 			),
-		) );
-	}
-
-	/**
-	 *	Add Meta Boxes
-	 *
-	 * @since     1.0.0
-	 * @access 	  public
-	 * @return	  void
-	 */
-	public function add_meta_boxes()
-	{
-		add_meta_box(
-			'plugin_name_data',
-			__( 'Plugin Name Metaboxes'. 'plugin-name' ),
-			array( $this, 'plugin_name_data' ),
-			'entries',
-			'normal',
-			'high'
+			array(
+				'id'          => '_number',
+				'label'       => esc_html__( 'Number', 'plugin-name' ),
+				'type'        => 'number',
+				'description' => esc_html__( 'This is the description below the number box', 'plugin-name' ),
+			),
+			array(
+				'id'      => '_radio',
+				'label'   => esc_html__( 'Radio', 'plugin-name' ),
+				'type'    => 'radio',
+				'options' => array(
+					'main'  => esc_html__( 'Main option', 'plugin-name' ),
+					'other' => esc_html__( 'Other option', 'plugin-name' ),
+				),
+			),
 		);
-
+		return apply_filters( 'plugin_name_meta_fields', $meta_fields );
 	}
 
 	/**
-	 * Text Input Callback
+	 * Add Meta Boxes
 	 *
-	 * @param mixed $key
-	 * @param mixed $field
-	 * @return void
-	 */
-	public function callback_text( $key, $field )
-	{
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
-		?>
-		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
-			<input type="text" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
-			<?php if ( ! empty( $field['description'] ) ) : ?>
-				<span class="description"><?php echo $field['description']; ?></span>
-			<?php endif; ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Checkbox Input Callback
-	 *
-	 * @param mixed $key
-	 * @param mixed $field
-	 */
-	public function callback_checkbox( $key, $field )
-	{
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
-		?>
-		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?></label>
-			<input type="checkbox" class="checkbox" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" value="1" <?php checked( $field['value'], 1 ); ?> />
-			<?php if ( ! empty( $field['description'] ) ) : ?>
-				<span class="description"><?php echo $field['description']; ?></span>
-			<?php endif; ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Select Callback
-	 *
-	 * @param mixed $key
-	 * @param mixed $field
-	 */
-	public function callback_select( $key, $field )
-	{
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
-		?>
-		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
-			<select name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>">
-				<?php foreach ( $field['options'] as $key => $value ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php if ( isset( $field['value'] ) ) selected( $field['value'], $key ); ?>><?php echo esc_html( $value ); ?></option>
-				<?php endforeach; ?>
-			</select>
-			<?php if ( ! empty( $field['description'] ) ) : ?><span class="description"><?php echo $field['description']; ?></span><?php endif; ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Multi-Select Callback
-	 *
-	 * @param mixed $key
-	 * @param mixed $field
-	 */
-	public function callback_multiselect( $key, $field )
-	{
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
-		?>
-		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
-			<select multiple="multiple" name="<?php echo esc_attr( $key ); ?>[]" id="<?php echo esc_attr( $key ); ?>">
-				<?php foreach ( $field['options'] as $key => $value ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php if ( ! empty( $field['value'] ) && is_array( $field['value'] ) ) selected( in_array( $key, $field['value'] ), true ); ?>><?php echo esc_html( $value ); ?></option>
-				<?php endforeach; ?>
-			</select>
-			<?php if ( ! empty( $field['description'] ) ) : ?>
-				<span class="description"><?php echo $field['description']; ?></span>
-			<?php endif; ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Textarea Callback
-	 *
-	 * @param mixed $key
-	 * @param mixed $field
-	 */
-	public function callback_textarea( $key, $field )
-	{
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
-		?>
-		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
-			<textarea name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" cols="50" rows="5" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>"><?php echo esc_html( $field['value'] ); ?></textarea>
-			<?php if ( ! empty( $field['description'] ) ) : ?>
-				<span class="description"><?php echo $field['description']; ?></span>
-			<?php endif; ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Image Upload Callback
-	 *
-	 * @param mixed $key
-	 * @param mixed $field
-	 */
-	public function callback_image( $key, $field )
-	{
-		global $thepostid;
-
-		if ( empty( $field['value'] ) ) {
-			$field['value'] = get_post_meta( $thepostid, $key, true );
-		}
-		?>
-		<p class="form-field">
-			<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) ; ?>:</label>
-			<input type="text" class="file_url" name="<?php echo esc_attr( $key ); ?>" id="<?php echo esc_attr( $key ); ?>" placeholder="<?php echo esc_attr( $field['placeholder'] ); ?>" value="<?php echo esc_attr( $field['value'] ); ?>" />
-			<?php if ( ! empty( $field['description'] ) ) : ?>
-				<span class="description"><?php echo $field['description']; ?></span>
-			<?php endif; ?>
-			<button class="button upload_image_button" data-uploader_button_text="<?php _e( 'Upload an image', 'plugin-name' ); ?>"><?php _e( 'Upload', 'plugin-name' ); ?></button>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Plugin Name Data Function
-	 *
+	 * @since  1.0.0
 	 * @access public
-	 * @param mixed $post
 	 * @return void
 	 */
-	public function plugin_name_data( $post )
-	{
-		global $post, $thepostid;
-		
-		$thepostid = $post->ID;
+	public function add_meta_boxes() {
+		foreach ( $this->screens as $screen ) {
+			add_meta_box(
+				'plugin_name_data',
+				esc_html__( 'Plugin Name Metaboxes', 'plugin-name' ),
+				array( $this, 'plugin_name_meta_box_callback' ),
+				$screen,
+				'normal',
+				'high'
+			);
+		}
+	}
 
-		echo '<div class="plugin_name_meta_data">';
+	/**
+	 * Generates the HTML for the meta box
+	 *
+	 * @param object $post WordPress post object.
+	 *
+	 * @since  1.0.0
+	 * @return void
+	 */
+	public function plugin_name_meta_box_callback( $post ) {
+		wp_nonce_field( 'plugin_name_data', 'plugin_name_nonce' );
+		$this->generate_fields( $post );
+	}
 
-		wp_nonce_field( 'save_meta_data', 'plugin_name_nonce' );
+	/**
+	 * Adds scripts for media uploader.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 */
+	public function admin_footer() {
+		?><script>
+			jQuery( document ).ready( function( $ ){
+				var file_frame;
+				var file_target_input;
 
-		do_action( 'plugin_name_entries_data_start', $thepostid );
+				$('.plugin-name-media').live('click', function(e){
 
-		foreach ( $this->metabox_fields() as $key => $field ) {
-			$type = ! empty( $field['type'] ) ? $field['type'] : 'text';
+					e.preventDefault();
 
-			if ( method_exists( $this, 'callback_' . $type ) ) {
-				call_user_func( array( $this, 'callback_' . $type ), $key, $field );
-			} else {
-				do_action( 'plugin_name_callback_' . $type, $key, $field );
+					file_target_input = $( this ).closest('.form-table').find('.file_url');
+
+					// If the media frame already exists, reopen it.
+					if ( file_frame ) {
+						file_frame.open();
+						return;
+					}
+
+					// Create the media frame.
+					file_frame = wp.media.frames.file_frame = wp.media({
+						title: $( this ).data( 'uploader_title' ),
+						button: {
+							text: $( this ).data( 'uploader_button_text' ),
+						},
+						multiple: false  // Set to true to allow multiple files to be selected.
+					});
+
+					// When an image is selected, run a callback.
+					file_frame.on( 'select', function() {
+						// We set multiple to false so only get one image from the uploader.
+						attachment = file_frame.state().get('selection').first().toJSON();
+
+						$( file_target_input ).val( attachment.url );
+					});
+
+					// Finally, open the modal.
+					file_frame.open();
+				});
+			});
+		</script>
+		<?php
+	}
+
+	/**
+	 * Generates the field's HTML for the meta box.
+	 *
+	 * @param object $post The post object.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 */
+	public function generate_fields( $post ) {
+		$output = '';
+
+		foreach ( $this->fields as $field ) {
+			$label       = '<label for="' . $field['id'] . '">' . $field['label'] . '</label>';
+			$db_value    = get_post_meta( $post->ID, 'plugin_name_' . $field['id'], true );
+			$description = isset( $field['description'] ) ? esc_html( $field['description'] ) : '';
+
+			switch ( $field['type'] ) {
+				case 'checkbox':
+					$input = sprintf(
+						'<input %s id="%s" name="%s" type="checkbox" value="1">',
+						'1' === $db_value ? 'checked' : '',
+						$field['id'],
+						$field['id']
+					);
+					break;
+				case 'media':
+					$input = sprintf(
+						'<input class="regular-text file_url" id="%s" name="%s" type="text" placeholder="%s" value="%s"> <input class="button plugin-name-media" id="%s_button" name="%s_button" data-uploader_button_text="Upload an image" type="button" value="Upload" />',
+						$field['id'],
+						$field['id'],
+						$field['placeholder'],
+						$db_value,
+						$field['id'],
+						$field['id']
+					);
+					break;
+				case 'radio':
+					$input  = '<fieldset>';
+					$input .= '<legend class="screen-reader-text">' . $field['label'] . '</legend>';
+					$i      = 0;
+					foreach ( $field['options'] as $key => $value ) {
+						$field_value = !is_numeric( $key ) ? $key : $value;
+						$input .= sprintf(
+							'<label><input %s id="%s" name="%s" type="radio" value="%s"> %s</label>%s',
+							$db_value === $field_value ? 'checked' : '',
+							$field['id'],
+							$field['id'],
+							$field_value,
+							$value,
+							$i < count( $field['options'] ) - 1 ? '<br>' : ''
+						);
+						$i++;
+					}
+					$input .= '</fieldset>';
+					break;
+				case 'select':
+					$input = sprintf(
+						'<select id="%s" name="%s">',
+						$field['id'],
+						$field['id']
+					);
+					foreach ( $field['options'] as $key => $value ) {
+						$field_value = ! is_numeric( $key ) ? $key : $value;
+						$input      .= sprintf(
+							'<option %s value="%s">%s</option>',
+							$db_value === $field_value ? 'selected' : '',
+							$field_value,
+							$value
+						);
+					}
+					$input .= '</select>';
+					break;
+				case 'textarea':
+					$input = sprintf(
+						'<textarea class="large-text" id="%s" name="%s" placeholder="%s" rows="5">%s</textarea>',
+						$field['id'],
+						$field['id'],
+						$field['placeholder'],
+						$db_value
+					);
+					break;
+				case 'number':
+					$input = sprintf(
+						'<input class="small-text" id="%s" name="%s" type="%s" value="%s" size="30"><div class="description">%s</div>',
+						$field['id'],
+						$field['id'],
+						$field['type'],
+						$db_value,
+						$description
+					);
+					break;
+				default:
+					$input = sprintf(
+						'<input %s id="%s" name="%s" type="%s" value="%s"><div class="description">%s</div>',
+						'color' !== $field['type'] ? 'class="regular-text"' : '',
+						$field['id'],
+						$field['id'],
+						$field['type'],
+						$db_value,
+						$description
+					);
 			}
+			$output .= sprintf(
+				'<tr><th scope="row">%s</th><td>%s</td></tr>',
+				$label,
+				$input
+			);
 		}
-
-		do_action( 'plugin_name_entries_data_end', $thepostid );
-
-		echo '</div>';
+		echo '<table class="form-table"><tbody>' . $output . '</tbody></table>';
 	}
 
 	/**
-	 * Save Metabox
+	 * Hooks into WordPress' save_post function.
 	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @since  1.0.0
 	 * @access public
-	 * @param mixed $post_id
-	 * @param mixed $post
-	 * @return void
 	 */
-	public function save_metabox( $post, $post_id )
-	{
+	public function save_plugin_name_data( $post_id ) {
+		// Validate nonce.
+		if ( ! isset( $_POST['plugin_name_nonce'] ) ) {
+			return $post_id;
+		}
+
+		$nonce = wp_unslash( $_POST['plugin_name_nonce'] );
+		if ( ! wp_verify_nonce( $nonce, 'plugin_name_data' ) ) {
+			return $post_id;
+		}
+
+		// Bail if doing autosave.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return $post_id;
+		}
+
+		// Bail if user is not authorized.
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return;
+			return $post_id;
 		}
 
-		if ( empty( $post_id ) || empty( $post ) || empty( $_POST ) ) {
-			return;
-		}
-
-		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
-			return;
-		}
-
-		if ( is_int( wp_is_post_revision( $post ) ) || is_int( wp_is_post_autosave( $post ) ) ){
-			return;
-		}
-		if ( empty( $_POST['plugin_name_nonce'] ) || ! wp_verify_nonce( $_POST['plugin_name_nonce'], 'save_meta_data' ) ) {
-			return;
-		}
-		if ( $post->post_type != 'entries' ) {
-			return;
-		}
-
-		do_action( 'plugin_name_save_entries', $post_id, $post );
-	}
-
-	/**
-	 * Save Plugin Name Data
-	 *
-	 * @param $post_id
-	 */
-	public function save_plugin_name_data( $post_id, $post  )
-	{
-		global $wpdb;
-
-		foreach ( $this->metabox_fields() as $key => $field ) {
-
-			if ( isset( $_POST[ $key ] ) ) {
-				if ( is_array( $_POST[ $key ] ) ) {
-					update_post_meta( $post_id, $key, array_map( 'sanitize_text_field', $_POST[ $key ] ) );
-				} else {
-					update_post_meta( $post_id, $key, sanitize_text_field( $_POST[ $key ] ) );
+		foreach ( $this->fields as $field ) {
+			if ( isset( $_POST[ $field['id'] ] ) ) {
+				switch ( $field['type'] ) {
+					case 'email':
+						$_POST[ $field['id'] ] = sanitize_email( $_POST[ $field['id'] ] );
+						break;
+					case 'text':
+						$_POST[ $field['id'] ] = sanitize_text_field( $_POST[ $field['id'] ] );
+						break;
 				}
-			} elseif ( ! empty( $field['type'] ) && $field['type'] == 'checkbox') {
-				update_post_meta( $post_id, $key, 0 );
+				update_post_meta( $post_id, 'plugin_name_' . $field['id'], $_POST[ $field['id'] ] );
+			} else if ( 'checkbox' === $field['type'] ) {
+				update_post_meta( $post_id, 'plugin_name_' . $field['id'], '0' );
 			}
 		}
 	}
