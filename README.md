@@ -15,11 +15,11 @@ Super-easy WordPress plugin boilerplate which you can use to develop your own pl
 - AJAX
 - Shortcode (with TinyMCE plugin)
 - Plugin Settings (Settings page with tabs is included)
+- Custom Metaboxes
+- Frontend Widgets
 
 **Coming soon:**
-- Frontend Widgets
 - Admin Dashboard Widgets
-- Custom Metaboxes
 - Guides and How-to Manuals
 
 
@@ -55,7 +55,19 @@ gulp build // build project and create ZIP archive
 ```
 
 ## Changelog
+...
+v2.3.1 March 18, 2020
+** FIXES **
+    - Fixed meta boxes class not saving
+...
+
+...
+v2.3.0 August 23, 2018
+** NEW **
+    - Added Meta boxes class
+    - Added frontend widget class
 ```
+...
 v2.2.1 - May 24, 2016
 ** Fixes **
     - Fix dbDelta() query
