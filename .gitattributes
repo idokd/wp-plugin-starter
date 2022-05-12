@@ -1,0 +1,14 @@
+# Directories
+/.wordpress-org export-ignore
+/.github export-ignore
+/.docs export-ignore
+
+# Files
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/Dockerfile export-ignore
+/deploy-plugin.sh export-ignore
+/composer.json export-ignore
+/composer.lock export-ignore
+/.cloudbuild.yaml export-ignore
+/pop-version.sh export-ignore

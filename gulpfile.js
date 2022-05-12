@@ -6,10 +6,10 @@
 /** CONFIG **/
 var pluginConfig = {
     'CONF Plugin Name': 'Some Awesome Plugin', // User friendly plugin name
-    'CONF_Plugin_Link': 'http://yourcompany.com/plugins/some-awesome-plugin', // Plugin homepage URL
-    'CONF_Plugin_Author': 'Your Company', // Use your own name or your company name
-    'CONF_Author_Link': 'http://yourcompany.com', // Use your own website
-    'CONF_Plugin_Copyright': '2016 Your Company', // Use your own name or your company name
+    'CONF_Plugin_Link': 'http://yalla-ya.com/plugins/some-awesome-plugin', // Plugin homepage URL
+    'CONF_Plugin_Author': 'yalla ya!', // Use your own name or your company name
+    'CONF_Author_Link': 'http://yalla-ya.com', // Use your own website
+    'CONF_Plugin_Copyright': '2022 yalla ya!', // Use your own name or your company name
     'plugin-name': 'some-awesome-plugin', // Plugin slug
     'Plugin_Name': 'Some_Awesome_Plugin', // Classes prefix
     'plugin_name': 'some_awesome_plugin', // plugin identifier

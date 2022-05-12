@@ -1,0 +1,14 @@
+/.wordpress-org
+/.git
+/.github
+/node_modules
+/.docs
+/.scripts
+.distignore
+.gitignore
+Dockerfile
+deploy-plugin.sh
+pop-version.sh
+composer.json
+composer.lock
+cloudbuild.yaml
