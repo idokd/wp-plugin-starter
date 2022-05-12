@@ -60,7 +60,7 @@ var
     plumber = require('gulp-plumber'),
     notify = require('gulp-notify'),
     del = require('del'),
-    runSequence = require('run-sequence').use(gulp),
+    runSequence = require('gulp4-run-sequence'),
     // production & deployment
     zip = require('gulp-zip'),
     // file manipulation
