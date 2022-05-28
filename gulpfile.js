@@ -19,6 +19,7 @@ var pluginConfig = {
 var mainFiles = [
     // include common file types
     './**/*', 
+    '.scripts/**',
     '!gulpfile.js', 
     '!package.json', 
     '!README.md', 

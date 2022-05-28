@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: make sure it works, and change to work on main folder name
+
 PLUGIN_FILENAME="plugin-name.php"
 PLUGIN_I10N_DOMAIN="plugin-name"
 
