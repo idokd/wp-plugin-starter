@@ -19,7 +19,9 @@ var pluginConfig = {
 var mainFiles = [
     // include common file types
     './**/*', 
+    '.scripts',
     '.scripts/**',
+    '.scripts/**/*',
     '!gulpfile.js', 
     '!package.json', 
     '!README.md', 
@@ -40,6 +42,7 @@ var buildInclude = [
     '**', 
     '!gulpfile.js', 
     '!package.json', 
+    '!cloudbuild.ymal', 
     '!README.md', 
     '!.gitignore', 
     '!build', 
@@ -61,6 +64,7 @@ var
     plumber = require('gulp-plumber'),
     notify = require('gulp-notify'),
     del = require('del'),
+    //runSequence = require('run-sequence').use(gulp),
     runSequence = require('gulp4-run-sequence'),
     // production & deployment
     zip = require('gulp-zip'),
@@ -131,4 +135,4 @@ gulp.task('build:archive', function() {
 });
 
 // Default task
-gulp.task('default', ['build']);
+//gulp.task('default', ['build']);
