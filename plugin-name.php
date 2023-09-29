@@ -128,6 +128,13 @@ require_once plugin_dir_path(__FILE__) . 'includes/shortcode/class-plugin-name-s
 add_action('plugins_loaded', array('Plugin_Name_Shortcode_Public', 'get_instance'));
 /* ----- Module End: Shortcode ----- */
 
+
+
+/* ----- Plugin Module: REST ----- */
+
+require_once plugin_dir_path(__FILE__) . 'includes/class-plugin-name-rest.php';
+add_action('plugins_loaded', array('Plugin_Name_REST', 'get_instance'));
+
 /*----------------------------------------------------------------------------*
  * Handle AJAX Calls
  *----------------------------------------------------------------------------*/
