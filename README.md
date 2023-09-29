@@ -32,7 +32,7 @@ git clone https://github.com/maxkostinevich/wp-plugin-starter-kit.git your-plugi
 cd your-plugin-name
 rm -rf .git
 rm README.md
-npm install --only=dev
+npm install
 ```
 
 **IMPORTANT STEPS BEFORE PROCEED**
